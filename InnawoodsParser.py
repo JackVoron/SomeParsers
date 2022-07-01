@@ -34,22 +34,29 @@ HEADERS = {"user_agent" : "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit
 
 def parse():
     for category in CATEGORIES:
+        print(f"Скачиваем {category}...")
         os.mkdir(category) if not os.path.isdir(category) else NULL
         os.chdir(category)
         response = requests.get(f"https://innawoods.net/contents/{category}.json").json()
         num = 0 
         for item in response:
             item['name'] = item['name'].replace("/", "∕")
-            with open(fR"({num}) {item['name']}.png", 'wb') as f:
+            with open(f"({num}) {item['name']}.png", 'wb') as f:
                 data = item["icon"]["image"].partition("base64,")[2]
                 f.write(base64.urlsafe_b64decode(data))
             if not item["skins"] == []:
                 for skin in item["skins"]:
                     num += 1
-                    with open(fR"({num}) {item['name']}.png", 'wb') as f:
+                    with open(f"({num}) {item['name']}.png", 'wb') as f:
                         data = skin["icon"]["image"].partition("base64,")[2]
                         f.write(base64.urlsafe_b64decode(data))
             num += 1  
         os.chdir("..")
-        
-parse()
+
+def main():
+    parse()
+    print("Работа программы завершена")
+    input("Нажмите ENTER для закрытия")
+
+if __name__ == "__main__":
+    main()
